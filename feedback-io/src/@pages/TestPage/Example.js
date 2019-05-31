@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Element from "./Element";
 import DropZone from "./DropZone";
 import { Container, Draggable } from 'react-smooth-dnd';
 import RecursiveContainer from "../../@components/RecursiveContainer";
+import filter from "lodash/filter";
+import cloneDeep from "lodash/cloneDeep"
 
 export default class Example extends Component {
     render() {
@@ -29,24 +31,61 @@ export default class Example extends Component {
         console.log(options);
         const {addedIndex, payload, removedIndex} = options;
         let elements = [...this.state.targetElements];
-        if (removedIndex !== null) {
+        if (removedIndex !== null && addedIndex!==null) {
+            let movedElement = { ...this.state.targetElements[removedIndex]};
+            let modifiedArray = filter(cloneDeep(this.state.targetElements), (n,i) => i!==removedIndex);
 
+            modifiedArray.splice(addedIndex,0,movedElement);
+            this.setState({
+                targetElements: modifiedArray
+            });
+        } else {
+            elements.push({
+                name: "Test"+ Date.now(),
+                key: "dynamic" + Date.now(),
+                type: payload.type
+            });
+            this.setState({
+                targetElements: elements
+            });
         }
-        elements.push({
-            name: "Test"+ Date.now(),
-            key: "z"
-        });
-        this.setState({
-            targetElements: elements
-        });
+
     }
 
     renderCategoryItem = (type) => {
         return (
-            <Draggable style={{padding: 10, margin: 5, border: "1px dashed #dedede", backgroundColor: "#eaeaea", maxWidth: 200}}>
+            <Draggable style={{padding: 10, margin: 5, border: "1px dashed #dedede", backgroundColor: "#eaeaea", maxWidth: 200}} >
                 {type}
             </Draggable>
         );
+    }
+
+    getCategoryItems = () => {
+        return [
+            {
+                name: "Textfield",
+                payload: {
+                    type: "textfield"
+                }
+            },
+            {
+                name: "Text Area",
+                payload: {
+                    type: "textarea"
+                }
+            },
+            {
+                name: "Radio Button",
+                payload: {
+                    type: "radio"
+                }
+            }
+        ];
+    };
+
+    getCategoryPayload = (index) => {
+        const categoryItem = this.getCategoryItems()[index];
+        return categoryItem.payload;
     }
 
     render() {
@@ -70,11 +109,12 @@ export default class Example extends Component {
                         Powered by Velotio
                     </div>
                     <div style={{width: 250, paddingLeft: 10, borderLeft: "1px solid black"}}>
-                        <Container groupName="1" behaviour={"copy"} onDrop={this.onDrop}>
-                            {this.renderCategoryItem("TextField")}
-                            {this.renderCategoryItem("Text Area")}
-                            {this.renderCategoryItem("Drop down")}
-                            {this.renderCategoryItem("Radio Button")}
+                        <Container groupName="1" getChildPayload={this.getCategoryPayload} behaviour={"copy"} onDrop={this.onDrop}>
+                            {this.getCategoryItems().map((category,idx) => {
+                                return (<Fragment key={idx}>
+                                    {this.renderCategoryItem(category.name)}
+                                    </Fragment>);
+                            })}
                         </Container>
                     </div>
                 </div>

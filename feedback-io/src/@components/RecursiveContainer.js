@@ -9,7 +9,7 @@ export default class RecursiveContainer extends Component {
 
     getItem = (item) => {
         //console.log(item);
-        item.type = "reset"
+        //item.type = "reset"
         if (item.type == "checkbox") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
@@ -104,7 +104,7 @@ export default class RecursiveContainer extends Component {
     }
     itemRenderer = (item, key) => {
         return (
-            <Fragment key={key} >
+            <Fragment key={`recursive-${key}`} >
                 <Fragment>
                     {this.getItem(item)}
                 </Fragment>
