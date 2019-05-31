@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import {Draggable} from "react-smooth-dnd";
+import {Draggable, Container} from "react-smooth-dnd";
 
 export default class RecursiveContainer extends Component {
     static propTypes = {
@@ -13,92 +13,119 @@ export default class RecursiveContainer extends Component {
         if (item.type == "checkbox") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"checkbox"} defaultValue={item.name}/>
+                    <input type={"checkbox"} />
                 </Draggable>
             )
         }
         if (item.type == "date") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"date"} defaultValue={item.name}/>
+                    <input type={"date"} />
                 </Draggable>
             )
         }
         if (item.type == "email") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"email"} defaultValue={item.name}/>
+                    <input type={"email"} />
                 </Draggable>
             )
         }
         if (item.type == "image") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"image"} defaultValue={item.name}/>
+                    <input type={"image"} />
                 </Draggable>
             )
         }
         if (item.type == "number") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"number"} defaultValue={item.name}/>
+                    <input type={"number"} />
                 </Draggable>
             )
         }
         if (item.type == "password") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"password"} defaultValue={item.name}/>
+                    <input type={"password"} />
                 </Draggable>
             )
         }
         if (item.type == "radio") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"radio"} defaultValue={item.name}/>
+                    <input type={"radio"} />
                 </Draggable>
             )
         }
         if (item.type == "range") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"range"} defaultValue={item.name}/>
+                    <input type={"range"} />
                 </Draggable>
             )
         }
         if (item.type == "reset") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"reset"} defaultValue={item.name}/>
+                    <input type={"reset"} />
                 </Draggable>
             )
         }
         if (item.type == "submit") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"submit"} defaultValue={item.name}/>
+                    <input type={"submit"} />
                 </Draggable>
             )
         }
         if (item.type == "tel") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"tel"} defaultValue={item.name}/>
+                    <input type={"tel"} pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
                 </Draggable>
             )
         }
         if (item.type == "textarea") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"color"} defaultValue={item.name}/>
+                    <textarea rows="10" cols="30"/>
+                </Draggable>
+            )
+        }
+        if (item.type == "color") {
+            return (
+                <Draggable style={{border: "1px dashed black", padding: 10}}>
+                    <input type={"color"} />
                 </Draggable>
             )
         }
         if (item.type == "textfield") {
             return (
                 <Draggable style={{border: "1px dashed black", padding: 10}}>
-                    <input type={"text"} defaultValue={item.name}/>
+                    <input type={"text"} />
                 </Draggable>
+            )
+        }
+        if (item.type == "row") {
+            console.log(item)
+            const insideDrop = (options) => {
+                this.props.onDropInside(item.key, options);
+            }
+            return (
+                <>
+                    <Container orientation="horizontal" groupName="1" onDrop={insideDrop} style={{ border: "1px dashed green", display: "flex", padding: 1}}>
+                        {item.children && item.children.length > 0 &&
+                            <RecursiveContainer config={item.children} onDropInside={this.props.onDropInside}/>
+                        }
+                        {(item.children === undefined || item.children.length === 0) &&
+                            <div className={"centerFlex"}>Empty row</div>
+                        }
+                    </Container>
+
+                </>
+
             )
         }
     }
@@ -108,9 +135,6 @@ export default class RecursiveContainer extends Component {
                 <Fragment>
                     {this.getItem(item)}
                 </Fragment>
-                {item.children && item.children.length > 0 &&
-                    <RecursiveContainer config={item.children} />
-                }
             </Fragment>
         );
     }
