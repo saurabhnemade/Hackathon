@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./appcontainer.css"
 
 export default class AppContainer extends Component {
     renderRoutes = () => {
@@ -20,7 +21,7 @@ export default class AppContainer extends Component {
         return (
             <>
                 <>
-                    <div>App Header</div>
+                    <div className={"app-title"}>Feedback.io</div>
                     <RouteManifest/>
                 </>
             </>
