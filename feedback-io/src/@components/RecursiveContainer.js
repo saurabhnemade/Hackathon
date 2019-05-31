@@ -8,17 +8,16 @@ export default class RecursiveContainer extends Component {
     };
 
     getItem = (item) => {
-        //console.log(item);
         return (
             <Draggable style={{border: "1px dashed black", padding: 10}}>
-                <input type={"text"} defaultValue={item.name}/>
+                <input type={"text"} value={item.name}/>
             </Draggable>
         )
     }
 
     itemRenderer = (item, key) => {
         return (
-            <Fragment key={key} >
+            <Fragment key={`recursive-${key}`} >
                 <Fragment>
                     {this.getItem(item)}
                 </Fragment>
